@@ -1,0 +1,13 @@
+{
+  "name": "caixabreak",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "cookie-parser": "^1.4.4",
+    "express": "^4.17.1",
+    "morgan": "^1.9.1",
+    "set-cookie-parser": "^2.4.3"
+  }
+}
