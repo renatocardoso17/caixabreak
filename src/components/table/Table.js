@@ -47,15 +47,6 @@ export default function Information({ saldo, tableColumns, tableData }) {
                         <tbody>
                             {rendRowTable()}
                         </tbody>
-                        <tfoot className="tfoot-dark">
-                            <tr>
-                                <th scope="col"></th>
-                                <th scope="col"></th>
-                                <th scope="col">Total</th>
-                                <th scope="col">10000</th>
-                                <th scope="col">600</th>
-                            </tr>
-                        </tfoot>
                     </table>
                 </div>
             </div>
