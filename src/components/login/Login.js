@@ -5,7 +5,7 @@ export default function Signup({ fields, handleFieldChange, onSubmit }) {
     return (
         <div className="container-sm" style={{ maxWidth: 400 }}>
             <div className="form-group">
-                <label>Username</label>
+                <label>Nº Adesão</label>
                 <input
                     className="form-control"
                     id="user"
@@ -14,7 +14,7 @@ export default function Signup({ fields, handleFieldChange, onSubmit }) {
                 />
             </div>
             <div className="form-group">
-                <label>Password</label>
+                <label>PIN</label>
                 <input
                     className="form-control"
                     id="code"

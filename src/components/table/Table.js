@@ -5,7 +5,7 @@ export default function Information({ saldo, tableColumns, tableData }) {
     const renderTableHeader = () => {
         return tableColumns.map((column, index) => {
             return (
-                <th className="th-lg" key={index} scope="col">{column}</th>
+                <th key={index} scope="col">{column}</th>
             );
         });
     }
@@ -29,18 +29,17 @@ export default function Information({ saldo, tableColumns, tableData }) {
     }
 
     return (
-        <div className="form-group overflow-auto">
+        <div className="form-group overflow-none">
             <div className="form-group">
                 <div className="d-flex">
                     <div style={{ marginTop: 15, marginBottom: 15, textAlign: 'center', width: 470 }}>
-                        <h4>{`Saldo disponivel: ${saldo} €`}</h4>
+                        <h5>{`Saldo disponivel: ${saldo} €`}</h5>
                     </div>
                 </div>
-                <small>Valor em EUR</small>
-                <div className="table-responsive w-auto text-nowrap">
+                <div className="table-responsive" /* text-nowrap */>
                     <table className="table">
                         <thead className="thead-dark">
-                            <tr className="tr-lg">
+                            <tr>
                                 {renderTableHeader()}
                             </tr>
                         </thead>
