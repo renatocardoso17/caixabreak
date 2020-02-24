@@ -18,6 +18,7 @@ export default function Signup({ fields, handleFieldChange, onSubmit }) {
                 <input
                     className="form-control"
                     id="code"
+                    type="password"
                     value={fields['code']}
                     onChange={handleFieldChange}
                 />
