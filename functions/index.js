@@ -1,28 +1,22 @@
-const express = require('express');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
+const functions = require('firebase-functions');
+const when = require('when');
 const axios = require('axios');
 const setCookieParser = require('set-cookie-parser');
 const cheerio = require('cheerio');
 
-const app = express();
+// Create and Deploy Your First Cloud Functions
+// https://firebase.google.com/docs/functions/write-firebase-functions
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-app.use(cookieParser());
-
-app.get('/', async (req, res) => {
-
-    const username = req.query.username || process.env.USERNAME;
-    const password = req.query.password || process.env.PASSWORD;
+exports.api = functions.https.onRequest(async (request, response) => {
+    const username = request.body.username || process.env.USERNAME;
+    const password = request.body.password || process.env.PASSWORD;
 
     if (!username || !password) {
-        res.status(400).send('please add username and password parameters on url. e.g. ?username=1234&password=4321');
+        response.status(400).send('please add username and password on your post request');
         return;
     }
 
-    const [getJsession, getSmsession] = await Promise.allSettled([
+    const [getJsession, getSmsession] = await when.settle([
         axios('https://portalprepagos.cgd.pt/portalprepagos/login.seam', {
             method: 'get'
         }),
@@ -33,8 +27,8 @@ app.get('/', async (req, res) => {
         })
     ]);
 
-    if (getJsession.status !== 'fulfilled' || (getSmsession.status === 'rejected' && getSmsession.reason.response.status !== 302)) {
-        res.status(500).send("CGD API changed");
+    if (getJsession.state !== 'fulfilled' || (getSmsession.state === 'rejected' && getSmsession.reason.response.status !== 302)) {
+        response.status(500).send("CGD API changed");
         return;
     }
     const cookies = setCookieParser.parse(getJsession.value.headers['set-cookie']).concat(setCookieParser.parse(getSmsession.reason.response.headers['set-cookie']));
@@ -42,7 +36,7 @@ app.get('/', async (req, res) => {
     const containsSMSession = cookies.some(cookie => cookie.name === 'SMSESSION');
 
     if (!containsSMSession) {
-        res.status(401).send("Wrong login or blocked account");
+        response.status(401).send("Wrong login or blocked account");
         return;
     }
 
@@ -58,30 +52,41 @@ app.get('/', async (req, res) => {
     const $ = cheerio.load(page.data);
 
     const data = {};
-    data.balance = $('label', 'p.valor').text();
+    data.balance = $('label', 'p.valor').text().replace(",", ".");
 
     const table = $('table.bordertable.clear');
     const tableRows = $('tr', table);
-    const tableHeader = tableRows.splice(0, 1);
-    const tableBody = tableRows.splice(0, tableRows.length - 1);
-    const tableHeaderColumns = [];
+
+    //remove table header and footer
+    const tableBody = tableRows.splice(1, tableRows.length - 2);
+    const tableHeaderColumns = ["Data", "Descrição", "Valor"];
     const tableRowsColumns = [];
-    $('td', tableHeader).each((headerColIdx, headerCol) => {
-        tableHeaderColumns.push($(headerCol).text().replace(/\t/gi, "").replace(/\n/gi, ""));
-    });
 
     tableBody.forEach((row) => {
         const rowColumns = [];
         $('td', row).each((colIdx, col) => {
-            rowColumns.push($(col).text().replace(/\s\s+/g, ' ').trim());
+            //discard first row
+            if (colIdx === 0) {
+                return;
+            }
+            let value = $(col).text().replace(/\s\s+/g, ' ').trim().replace(",", ".") || 0;
+            //Debit
+            if (colIdx === 3 && value.length) {
+                value = parseFloat("-" + value);
+            }
+            if (colIdx === 4 && value.length) {
+                value = parseFloat(value);
+            }
+            if (value !== 0) {
+                rowColumns.push(value);
+            }
         });
         tableRowsColumns.push(rowColumns);
     });
 
     data.columns = tableHeaderColumns;
     data.rows = tableRowsColumns.reverse();
+    data.lastUpdate = new Date();
 
-    res.send(data);
+    response.send(data);
 });
-
-module.exports = app;
