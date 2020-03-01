@@ -1,75 +1,181 @@
-import React, { useState } from 'react';
+import React from 'react';
+import ReactLoading from 'react-loading';
 import logo from './logo512.png';
-import { useFormFields } from "./components/hooks/useFormField";
+import localStorageService from "./components/localstorage/localStorageService";
+import movementsService from "./components/movements/movementsService";
 import Table from './components/table/Table';
 import Login from './components/login/Login';
-import { service } from './components/service';
+
 
 import './App.css';
 import "bootswatch/dist/slate/bootstrap.min.css";
 
-
-// const columns = [
-//     'Data',
-//     'Data valor',
-//     'Descrição',
-//     'Débito',
-//     'Crédito'
-// ];
-
-// const tableData = [
-//     ['02-11-2019', '02-11-2019', 'asdasd', '400', '400'],
-//     ['03-10-2019', '02-11-2019', 'asdasd', '500', '500'],
-//     ['04-09-2019', '02-11-2019', 'asdasdasdasdasd  asd sda das das d', '20', '20'],
-//     ['12-04-2019', '02-11-2019', 'asdasd as dsa da sd sdad ', '450', '450'],
-//     ['15-02-2019', '02-11-2019', 'asdasd', '65', '65'],
-//     ['31-08-2019', '02-11-2019', 'asdasd', '1500', '1500'],
-//     ['23-06-2019', '02-11-2019', 'asdasd', '1111', '1111'],
-//     ['32-04-2019', '02-11-2019', 'asdasd', '12', '12'],
-//     ['30-12-2019', '02-11-2019', 'asdasd', '1', '1']
-// ];
-
-function App() {
-    const [fields, handleFieldChange, reset] = useFormFields({
-        user: "",
-        code: ""
-    });
-    const [data, setData] = useState();
-
-    const onSubmit = () => {
-
-        const data = service(fields.user, fields.code);
-        setData({
-            saldo: data.balance,
-            tableColumns: data.columns,
-            tableData: data.rows
-        })
-        console.log(data);
-        reset({
-            user: '',
-            code: ''
-        })
+class App extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleFieldChange = this.handleFieldChange.bind(this);
+        this.handleCheckChange = this.handleCheckChange.bind(this);
+        this.onSubmit = this.onSubmit.bind(this);
+        this.logout = this.logout.bind(this);
+        this.state = {
+            loading: false,
+            fields: {
+                username: '',
+                password: '',
+                memorize: false
+            }
+        };
+        const caixaLocalStorageData = localStorageService.retrieve();
+        if (caixaLocalStorageData) {
+            this.state = {
+                loading: true,
+                fields: {
+                    username: caixaLocalStorageData.userDetails.username,
+                    password: caixaLocalStorageData.userDetails.password,
+                    memorize: true
+                },
+                data: undefined,
+                error: undefined
+            };
+            this.getData().then(response =>
+                this.setState({
+                    ...this.state,
+                    loading: false,
+                    data: {
+                        balance: response.balance,
+                        columns: response.columns,
+                        rows: response.rows,
+                        lastUpdate: new Date(response.lastUpdate)
+                    }
+                })
+            ).catch(e => {
+                console.log('Error: ', e.message);
+                this.setState({
+                    ...this.state,
+                    loading: false,
+                    data: undefined,
+                    error: e.response.data
+                });
+            });
+        }
     }
 
-    return (
-        <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo" />
+    handleFieldChange(event) {
+        this.setState({
+            ...this.state,
+            fields: {
+                ...this.state.fields,
+                [event.target.id]: event.target.value
+            }
+        });
+    }
+
+    handleCheckChange(event) {
+        this.setState({
+            ...this.state,
+            fields: {
+                ...this.state.fields,
+                [event.target.id]: event.target.checked
+            }
+        });
+    }
+
+    logout() {
+        this.setState({
+            ...this.state,
+            loading: false,
+            fields: {
+                username: '',
+                password: '',
+                memorize: false
+            },
+            data: undefined,
+            error: undefined
+        });
+        localStorageService.clear();
+    }
+
+    async onSubmit(event) {
+        event.preventDefault();
+        this.setState({
+            ...this.state,
+            loading: true,
+            data: undefined,
+            error: undefined
+        });
+        this.getData()
+            .then(response =>
+                this.setState({
+                    ...this.state,
+                    loading: false,
+                    data: {
+                        balance: response.balance,
+                        columns: response.columns,
+                        rows: response.rows,
+                        lastUpdate: new Date(response.lastUpdate)
+                    }
+                }))
+            .catch(e => {
+                this.setState({
+                    ...this.state,
+                    loading: false,
+                    data: undefined,
+                    error: e.response.data
+                });
+            });
+    }
+
+    async getData() {
+        const {username, password, memorize} = this.state.fields;
+        const response = await movementsService.getData(username, password);
+        if (memorize) {
+            localStorageService.save({
+                userDetails: {
+                    username,
+                    password
+                },
+                lastUpdate: new Date(response.lastUpdate),
+                data: response
+            });
+        } else {
+            localStorageService.clear();
+        }
+        return response;
+    }
+
+    render() {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo"/>
+                    {this.state.loading && <ReactLoading type="bars" color="#aaa" height={100} width={100}/>}
+                </header>
                 <div className="container">
-                    <Login
-                        fields={fields}
-                        handleFieldChange={handleFieldChange}
-                        onSubmit={onSubmit}
-                    />
-                    {data && <Table
-                        saldo={data.balance || 0}
-                        tableColumns={data.columns || []}
-                        tableData={data.rows || []}
+                    {!this.state.loading && !this.state.data && <Login
+                        fields={this.state.fields}
+                        handleFieldChange={this.handleFieldChange}
+                        handleCheckChange={this.handleCheckChange}
+                        onSubmit={this.onSubmit}
+                    />}
+                    {this.state.error && <div className="error">
+                        <span>{this.state.error}</span>
+                    </div>}
+                    {this.state.data && <button
+                        className="btn btn-lg btn-primary"
+                        onClick={this.logout}>
+                        Logout
+                    </button>}
+                    {!this.state.loading && this.state.data && <Table
+                        balance={this.state.data.balance || 0}
+                        columns={this.state.data.columns || []}
+                        rows={this.state.data.rows || []}
+                        lastUpdate={this.state.data.lastUpdate.toLocaleString()}
                     />}
                 </div>
-            </header>
-        </div>
-    );
+            </div>
+        );
+    }
 }
+
 
 export default App;

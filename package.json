@@ -13,15 +13,15 @@
     "cheerio": "^1.0.0-rc.3",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
+    "react-loading": "^2.0.3",
     "react-scripts": "3.4.0",
     "set-cookie-parser": "^2.4.3"
   },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "deploy": "firebase deploy",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "deploy": "firebase deploy --only hosting",
+    "deploy all": "firebase deploy"
   },
   "eslintConfig": {
     "extends": "react-app"
