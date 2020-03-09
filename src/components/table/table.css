@@ -1,0 +1,48 @@
+.balance {
+    text-align: center;
+    padding: 40px 10px;
+}
+
+.balance-value {
+    font-size: 36px;
+    color: white;
+}
+
+.updated {
+    text-align: center;
+    padding: 0 10px 15px 10px;
+}
+
+.table-responsive {
+    -webkit-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.75);
+    -moz-box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.75);
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.75);
+}
+
+.table {
+    margin-bottom: 0 !important;
+}
+
+.table .table-column-header {
+    vertical-align: middle;
+    padding: 8px;
+}
+
+.table .table-column {
+    vertical-align: middle;
+    padding: 5px 10px;
+}
+
+.table .column-1 {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+.table .column-2 {
+    text-align: right;
+    white-space: nowrap;
+}
+
+
+
+

@@ -1,11 +1,27 @@
 import React from 'react';
+import './table.css';
 
 export default function Information({ balance, columns, rows, lastUpdate }) {
+    const appendLeadingZeroes = n => n <= 9 ? `0${n}` : n;
+    const formatCurrency = value => Number(value).toFixed(2);
+    const formatFullDate = value => {
+        let datetime = new Date(lastUpdate);
+        return   appendLeadingZeroes(datetime.getDate()) + "/" + appendLeadingZeroes(datetime.getMonth()+1) + "/" + datetime.getFullYear() + " " + appendLeadingZeroes(datetime.getHours()) + ":" + appendLeadingZeroes(datetime.getMinutes()) + ":" + appendLeadingZeroes(datetime.getSeconds());
+    };
+    const formatShortDate = value => {
+        const date = value.split('-');
+        const year = date[2].substring(4, 2);
+        return `${date[0]}/${date[1]}/${year}`;
+    };
+
+    const balanceValue = balance.match(/[0-9]+\.[0-9]*/)[0];
+    const balanceCurrency = balance.match(/[a-zA-Z]+/)[0];
+    const updateDate = formatFullDate(lastUpdate);
 
     const renderTableHeader = () => {
         return columns.map((column, index) => {
             return (
-                <th key={index} scope="col">{column}</th>
+                <th key={index} scope="col" className={`table-column-header column-${index}`}>{column}</th>
             );
         });
     };
@@ -13,7 +29,7 @@ export default function Information({ balance, columns, rows, lastUpdate }) {
     const renderRowTable = () => {
         return rows.map((row, index) => {
             return (
-                <tr key={index}>
+                <tr key={index} >
                     {renderColumnData(row)}
                 </tr>
             )
@@ -22,8 +38,16 @@ export default function Information({ balance, columns, rows, lastUpdate }) {
 
     const renderColumnData = data => {
         return data.map((data, index) => {
+
+            let value = data;
+            if (index === 0) {
+                value = formatShortDate(data);
+            }
+            if (index === 2) {
+                value = formatCurrency(data);
+            }
             return (
-                <td key={index}>{data}</td>
+                <td key={index} className={`table-column column-${index}`}>{value}</td>
             )
         })
     };
@@ -31,15 +55,12 @@ export default function Information({ balance, columns, rows, lastUpdate }) {
     return (
         <div className="form-group overflow-none">
             <div className="form-group">
-                <div className="d-flex">
-                    <div style={{ marginTop: 15, marginBottom: 15, textAlign: 'right', width: '100%' }}>
-                        <h5>{`Última Actualização: ${lastUpdate}`}</h5>
-                    </div>
+                <div className="balance">
+                    <div className="balance-label">Saldo disponível:</div>
+                    <div className="balance-value">{`${balanceValue} ${balanceCurrency}`}</div>
                 </div>
-                <div className="d-flex">
-                    <div style={{ marginTop: 15, marginBottom: 15, textAlign: 'right', width: '100%' }}>
-                        <h5>{`Saldo disponível: ${balance}`}</h5>
-                    </div>
+                <div className="updated">
+                    {`Últ. Act.: ${updateDate}`}
                 </div>
                 <div className="table-responsive" /* text-nowrap */>
                     <table className="table table-striped">

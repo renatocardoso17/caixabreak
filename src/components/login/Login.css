@@ -1,9 +1,18 @@
 .form-signin {
     width: 100%;
-    max-width: 330px;
-    padding: 15px;
-    margin: auto;
+    max-width: 320px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
+
+.form-signin .form-signin-title {
+    font-size: 26px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
 .form-signin .checkbox {
     font-weight: 400;
 }
@@ -26,4 +35,10 @@
     margin-bottom: 10px;
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+}
+
+.login-button {
+    width: 150px;
+    display: block !important;
+    margin: 0 auto;
 }

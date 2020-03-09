@@ -22,7 +22,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "deploy": "firebase deploy --only hosting",
-    "deploy all": "firebase deploy"
+    "deploy all": "firebase deploy",
+    "mock": "sh tools/wiremock/scripts/wiremock-start.sh"
   },
   "eslintConfig": {
     "extends": "react-app"

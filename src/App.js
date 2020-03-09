@@ -1,6 +1,8 @@
 import React from 'react';
 import ReactLoading from 'react-loading';
-import logo from './logo512.png';
+import logo from './logo-50.png';
+import refreshImg from './refresh.svg';
+import logoutImg from './logout.svg';
 import localStorageService from "./components/localstorage/localStorageService";
 import movementsService from "./components/movements/movementsService";
 import Table from './components/table/Table';
@@ -145,12 +147,22 @@ class App extends React.Component {
 
     render() {
         return (
-            <div className="App">
-                <header className="App-header">
-                    <img src={logo} className="App-logo" alt="logo"/>
-                    {this.state.loading && <ReactLoading type="bars" color="#aaa" height={100} width={100}/>}
+            <div className="app">
+                <header className="app-header">
+                    <img src={logo} className="app-logo" width="85" height="50" alt="logo"/>
+                    {this.state.data && <div className="refresh-container">
+                        {this.state.data &&  <div onClick={this.onSubmit} title="Refresh" className="app-link">
+                            <img src={refreshImg} alt="refresh" width={50} height={50}/>
+                        </div>}
+                    </div>}
+                    {this.state.data && <div className="logout-container">
+                        <div onClick={this.logout} title="Sair" className="app-link">
+                            <img src={logoutImg} alt="logout" width={40} height={40} />
+                        </div>
+                    </div>}
                 </header>
-                <div className="container">
+                {this.state.loading && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-Loading"/>}
+                <div className="app-container">
                     {!this.state.loading && !this.state.data && <Login
                         fields={this.state.fields}
                         handleFieldChange={this.handleFieldChange}
@@ -160,16 +172,11 @@ class App extends React.Component {
                     {this.state.error && <div className="error">
                         <span>{this.state.error}</span>
                     </div>}
-                    {this.state.data && <button
-                        className="btn btn-lg btn-primary"
-                        onClick={this.logout}>
-                        Logout
-                    </button>}
                     {!this.state.loading && this.state.data && <Table
                         balance={this.state.data.balance || 0}
                         columns={this.state.data.columns || []}
                         rows={this.state.data.rows || []}
-                        lastUpdate={this.state.data.lastUpdate.toLocaleString()}
+                        lastUpdate={this.state.data.lastUpdate}
                     />}
                 </div>
             </div>
