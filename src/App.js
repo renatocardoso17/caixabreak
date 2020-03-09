@@ -150,16 +150,16 @@ class App extends React.Component {
             <div className="app">
                 <header className="app-header">
                     <img src={logo} className="app-logo" width="85" height="50" alt="logo"/>
-                    <div className="refresh-container">
-                        {this.state.data &&  <a onClick={() => window.location.reload()} title="Refresh" className="app-link">
+                    {this.state.data && <div className="refresh-container">
+                        {this.state.data &&  <div onClick={this.onSubmit} title="Refresh" className="app-link">
                             <img src={refreshImg} alt="refresh" width={50} height={50}/>
-                        </a>}
-                    </div>
-                    <div className="logout-container">
-                        {this.state.data && <a onClick={this.logout} title="Sair" className="app-link">
+                        </div>}
+                    </div>}
+                    {this.state.data && <div className="logout-container">
+                        <div onClick={this.logout} title="Sair" className="app-link">
                             <img src={logoutImg} alt="logout" width={40} height={40} />
-                        </a>}
-                    </div>
+                        </div>
+                    </div>}
                 </header>
                 {this.state.loading && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-Loading"/>}
                 <div className="app-container">

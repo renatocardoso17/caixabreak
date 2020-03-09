@@ -27,6 +27,7 @@
 
 .app-link {
     display: inline-block;
+    cursor: pointer;
 }
 
 .logout-container {
