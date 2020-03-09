@@ -1,0 +1,43 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/api"
+    },
+    "response": {
+        "status": 200,
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "jsonBody": {
+            "balance": "87.82EUR",
+            "columns": [
+                "Data",
+                "Descrição",
+                "Valor"
+            ],
+            "rows": [
+                [
+                    "03-03-2020",
+                    "CONTINENTE RIO TINTO4435-096 RIO TINTO",
+                    -3.39
+                ],
+                [
+                    "03-03-2020",
+                    "BAGGA 4435-213 RIO TINTO",
+                    -3.2
+                ],
+                [
+                    "01-03-2020",
+                    "LEITARIA QUINTA 4460-996 PORTO",
+                    -6
+                ],
+                [
+                    "27-02-2020",
+                    "GRUPO AUCHAN RIO TINTO",
+                    -14.71
+                ]
+            ],
+            "lastUpdate": "2020-03-07T11:20:25.503Z"
+        }
+    }
+}

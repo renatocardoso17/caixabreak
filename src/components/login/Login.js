@@ -6,7 +6,7 @@ export default function Signup({ fields, handleFieldChange, handleCheckChange, o
 
     return (
         <form className="form-signin" onSubmit={onSubmit}>
-            <h1 className="h3 mb-3 font-weight-normal">CGD Portal Pré-pagos</h1>
+            <h1 className="form-signin-title">CGD Portal Pré-pagos</h1>
             <label
                 htmlFor="username"
                 className="sr-only">
@@ -43,11 +43,11 @@ export default function Signup({ fields, handleFieldChange, handleCheckChange, o
                         type="checkbox"
                         id="memorize"
                         checked={fields['memorize']}
-                        onChange={handleCheckChange} /> Memorizar-me
+                        onChange={handleCheckChange} /> Manter Autenticado
                 </label>
             </div>
 
-            <input className="btn btn-lg btn-primary btn-block" type="submit" value="Consultar" />
+            <input className="btn btn-lg btn-primary login-button" type="submit" value="Autenticar" />
         </form>
     );
 }
