@@ -3,8 +3,8 @@ import ReactLoading from 'react-loading';
 import logo from './logo-50.png';
 import refreshImg from './refresh.svg';
 import logoutImg from './logout.svg';
-import localStorageService from "./components/localstorage/localStorageService";
-import movementsService from "./components/movements/movementsService";
+import localStorageService from "./services/localStorageService";
+import movementsService from "./services/movementsService";
 import Table from './components/table/Table';
 import Login from './components/login/Login';
 

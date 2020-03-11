@@ -1,7 +1,7 @@
 import React from 'react';
 import './table.css';
 
-export default function Information({ balance, columns, rows, lastUpdate }) {
+const Table = ({ balance, columns, rows, lastUpdate }) => {
     const appendLeadingZeroes = n => n <= 9 ? `0${n}` : n;
     const formatCurrency = value => Number(value).toFixed(2);
     const formatFullDate = value => {
@@ -77,4 +77,6 @@ export default function Information({ balance, columns, rows, lastUpdate }) {
             </div>
         </div>
     );
-}
+};
+
+export default Table;

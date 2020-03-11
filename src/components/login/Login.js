@@ -1,11 +1,23 @@
-import React from 'react';
+import React, {useCallback} from 'react';
+import PropTypes from 'prop-types';
 
 import './Login.css';
 
-export default function Signup({ fields, handleFieldChange, handleCheckChange, onSubmit }) {
+const Login = ({fields, onChange, onSubmit}) => {
+    const {username, password, rememberMe} = fields;
+
+    const onChangeHandler = useCallback(event => {
+        let {id, value, checked} = event.target;
+        if (id === 'rememberMe') {
+            value = checked
+        }
+        onChange(id, value)
+    }, [onChange]);
+
+    const onSubmitHandler = useCallback(onSubmit, [onSubmit]);
 
     return (
-        <form className="form-signin" onSubmit={onSubmit}>
+        <div className="form-signin">
             <h1 className="form-signin-title">CGD Portal Pré-pagos</h1>
             <label
                 htmlFor="username"
@@ -19,8 +31,8 @@ export default function Signup({ fields, handleFieldChange, handleCheckChange, o
                 placeholder="Nº Adesão"
                 required
                 autoFocus
-                value={fields['username']}
-                onChange={handleFieldChange}
+                value={username}
+                onChange={onChangeHandler}
             />
             <label
                 htmlFor="password"
@@ -33,21 +45,33 @@ export default function Signup({ fields, handleFieldChange, handleCheckChange, o
                 type="password"
                 placeholder="PIN"
                 required
-                value={fields['password']}
-                onChange={handleFieldChange}
+                value={password}
+                onChange={onChangeHandler}
             />
 
             <div className="checkbox mb-3">
                 <label>
                     <input
                         type="checkbox"
-                        id="memorize"
-                        checked={fields['memorize']}
-                        onChange={handleCheckChange} /> Manter Autenticado
+                        id="rememberMe"
+                        checked={rememberMe}
+                        onChange={onChangeHandler}/> Manter Autenticado
                 </label>
             </div>
 
-            <input className="btn btn-lg btn-primary login-button" type="submit" value="Autenticar" />
-        </form>
+            <button className="btn btn-lg btn-primary login-button" onClick={onSubmitHandler}>Autenticar</button>
+        </div>
     );
-}
+};
+
+Login.propTypes = {
+    fields: PropTypes.shape({
+        username: PropTypes.string.isRequired,
+        password: PropTypes.string.isRequired,
+        rememberMe: PropTypes.bool.isRequired,
+    }).isRequired,
+    onChange: PropTypes.func.isRequired,
+    onSubmit: PropTypes.func.isRequired
+};
+
+export default Login;
