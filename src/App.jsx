@@ -7,7 +7,7 @@ import refreshImg from "./refresh.svg";
 import logoutImg from "./logout.svg";
 import ReactLoading from "react-loading";
 import Login from "./components/login/Login";
-import Table from "./components/table/Table";
+import Movements from "./components/movements/Movements";
 import localStorageService from "./services/localStorageService";
 import movementsService from "./services/movementsService";
 
@@ -135,7 +135,7 @@ const App = () => {
                 {error && <div className="error">
                     <span>{error}</span>
                 </div>}
-                {showTable && <Table
+                {showTable && <Movements
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
