@@ -23,7 +23,7 @@ const App = () => {
     const [error, setError] = useState(undefined);
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState(undefined);
-    const [showTable, setShowTable] = useState(false);
+    const [showMovements, setShowMovements] = useState(false);
 
 
     const onSubmitHandler = useCallback(async () => {
@@ -61,20 +61,15 @@ const App = () => {
     //Show Table with Movement
     useEffect(() => {
         const show = !isLoading && isLoggedIn && data;
-        setShowTable(show);
-    }, [isLoggedIn, isLoading, data, setShowTable]);
+        setShowMovements(show);
+    }, [isLoggedIn, isLoading, data, setShowMovements]);
 
 
     //Save credentials on Login
     useEffect(() => {
         if(isLoggedIn && login.rememberMe && data) {
-            const { username, password, rememberMe} = login;
             localStorageService.save({
-                login: {
-                    username,
-                    password,
-                    rememberMe,
-                },
+                login,
                 lastUpdate: data.lastUpdate,
                 data,
             })
@@ -107,7 +102,7 @@ const App = () => {
         setError(undefined);
         setIsLoading(false);
         setData(undefined);
-        setShowTable(false);
+        setShowMovements(false);
     };
 
     return (
@@ -135,7 +130,7 @@ const App = () => {
                 {error && <div className="error">
                     <span>{error}</span>
                 </div>}
-                {showTable && <Movements
+                {showMovements && <Movements
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
