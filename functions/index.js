@@ -10,6 +10,7 @@ const cheerio = require('cheerio');
 exports.api = functions.https.onRequest(async (request, response) => {
     const username = request.body.username || process.env.USERNAME;
     const password = request.body.password || process.env.PASSWORD;
+    const period = request.body.period || 'UNBLD';
 
     if (!username || !password) {
         response.status(400).send('please add username and password on your post request');
@@ -42,27 +43,51 @@ exports.api = functions.https.onRequest(async (request, response) => {
 
     const cookieStr = cookies.reduce((acc, cookie) => acc + cookie.name + '=' + cookie.value + ';', '');
 
-    const page = await axios('https://portalprepagos.cgd.pt/portalprepagos/private/saldoMovimentos.seam', {
+    let movements = await axios('https://portalprepagos.cgd.pt/portalprepagos/private/saldoMovimentos.seam', {
         method: 'get',
         headers: {
             'Cookie': cookieStr
         }
     });
 
-    const $ = cheerio.load(page.data);
+    if (period !== 'UNBLD') {
+        // read default page
+        const movementsTempPage = cheerio.load(movements.data);
+        const cardId = movementsTempPage('option', '#consultaMovimentosCartoesPrePagos\\:selectedCard').attr('value');
+        const javaxFace = movementsTempPage('#javax\\.faces\\.ViewState').attr('value');
+        const body = `consultaMovimentosCartoesPrePagos=consultaMovimentosCartoesPrePagos&consultaMovimentosCartoesPrePagos%3AignoreFieldsComp=&consultaMovimentosCartoesPrePagos%3AselectedCard=${cardId}&consultaMovimentosCartoesPrePagos%3AextractDates=${encodeURI(period)}&javax.faces.ViewState=${javaxFace}`;
+        movements = await axios('https://portalprepagos.cgd.pt/portalprepagos/private/saldoMovimentos.seam', {
+            method: 'post',
+            headers: {
+                'Cookie': cookieStr
+            },
+            data: body
+        });
+    }
+
+    const $ = cheerio.load(movements.data);
 
     const data = {};
     data.balance = $('label', 'p.valor').text().replace(",", ".");
 
     const table = $('table.bordertable.clear');
+    const monthPeriods = $('option', '#consultaMovimentosCartoesPrePagos\\:extractDates');
     const tableRows = $('tr', table);
 
     //remove table header and footer
     const tableBody = tableRows.splice(1, tableRows.length - 2);
     const tableHeaderColumns = ["Data", "Descrição", "Valor"];
     const tableRowsColumns = [];
+    const tablePeriods = [];
 
-    tableBody.forEach((row) => {
+    monthPeriods.each((periodIdx, period) => {
+        tablePeriods.push({
+            key: $(period).attr('value'),
+            value: $(period).text()
+        });
+    });
+
+    tableBody.forEach(row => {
         const rowColumns = [];
         $('td', row).each((colIdx, col) => {
             //discard first row
@@ -86,6 +111,7 @@ exports.api = functions.https.onRequest(async (request, response) => {
 
     data.columns = tableHeaderColumns;
     data.rows = tableRowsColumns.reverse();
+    data.periods = tablePeriods;
     data.lastUpdate = new Date();
 
     response.send(data);
