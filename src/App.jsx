@@ -33,8 +33,6 @@ const App = () => {
         try {
             const { username, password } = loginInfo;
 
-            console.log('onSubmitHandler', username, password, period);
-
             const {
                 balance = '',
                 columns = [],
