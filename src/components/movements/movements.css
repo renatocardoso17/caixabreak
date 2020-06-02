@@ -8,9 +8,18 @@
     color: white;
 }
 
+.periods-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.periods {
+
+}
+
 .updated {
-    text-align: center;
-    padding: 0 10px 15px 10px;
+    text-align: right;
+    padding: 0 0px 15px 10px;
 }
 
 .table-responsive {
@@ -41,6 +50,11 @@
 .table .column-2 {
     text-align: right;
     white-space: nowrap;
+}
+
+.dropdown-select {
+    width: 100%;
+    height: auto;
 }
 
 

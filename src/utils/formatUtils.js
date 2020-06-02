@@ -21,3 +21,6 @@ export const extractBalanceValueAndCurrency = balance => {
         balanceCurrency
     }
 };
+
+export const formatPeriod = period => period.replace('-', '/');
+

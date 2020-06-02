@@ -24,20 +24,28 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState(undefined);
     const [showMovements, setShowMovements] = useState(false);
+    const [period, setPeriod] = useState(undefined);
 
-
-    const onSubmitHandler = useCallback(async () => {
+    const onSubmitHandler = useCallback(async (loginInfo) => {
         setIsLoading(true);
         setError(false);
 
         try {
-            const { username, password } = login;
-            const {balance = '', columns = [], rows = [], lastUpdate} = await movementsService.getData(username, password);
+            const { username, password } = loginInfo;
+
+            const {
+                balance = '',
+                columns = [],
+                rows = [],
+                lastUpdate,
+                periods
+            } = await movementsService.getData(username, password, period);
 
             setData({
                 balance,
                 columns,
                 rows,
+                periods,
                 lastUpdate: new Date(lastUpdate)
             });
 
@@ -45,12 +53,17 @@ const App = () => {
         } catch (error) {
             console.error('Error: ', error.message);
             setData(undefined);
+            setPeriod(undefined);
             setError(error.response.data);
         } finally {
             setIsLoading(false);
         }
 
-    }, [login]);
+    }, [setData, setError, setIsLoading, setIsLoggedIn, period]);
+
+    const onChangePeriodHandler = useCallback((value) => {
+        setPeriod(value);
+    }, []);
 
     //Show Login Form
     useEffect(() => {
@@ -80,15 +93,23 @@ const App = () => {
     useEffect(() => {
         const localStorageData = localStorageService.retrieve();
         if (localStorageData) {
-            setLogin({
+            const loginInfo = {
                 ...localStorageData.login
-            });
-            onSubmitHandler();
+            };
+            setLogin(loginInfo);
+            onSubmitHandler(loginInfo);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
-    const onChangeHandler = (id, value) => {
+    //fetch movements on period change
+    useEffect(() => {
+        if (period && isLoggedIn) {
+            onSubmitHandler(login);
+        }
+    }, [isLoggedIn, login, period, onSubmitHandler]);
+
+    const onLoginChangeHandler = (id, value) => {
         setLogin({
             ...login,
             [id]: value
@@ -102,6 +123,7 @@ const App = () => {
         setError(undefined);
         setIsLoading(false);
         setData(undefined);
+        setPeriod(undefined);
         setShowMovements(false);
     };
 
@@ -124,8 +146,8 @@ const App = () => {
                 {isLoading && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-Loading"/>}
                 {showLoginForm && <Login
                     fields={login}
-                    onChange={onChangeHandler}
-                    onSubmit={onSubmitHandler}
+                    onChange={onLoginChangeHandler}
+                    onSubmit={() => onSubmitHandler(login)}
                 />}
                 {error && <div className="error">
                     <span>{error}</span>
@@ -134,7 +156,10 @@ const App = () => {
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
+                    selectedPeriod={period}
+                    periods={data.periods}
                     lastUpdate={data.lastUpdate}
+                    onChangePeriod={onChangePeriodHandler}
                 />}
             </div>
         </div>

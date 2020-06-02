@@ -1,10 +1,23 @@
-import React from 'react';
+import React, {useCallback, useState} from 'react';
 import './movements.css';
 import PropTypes from "prop-types";
-import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency} from "../../utils/formatUtils";
+import {
+    extractBalanceValueAndCurrency,
+    formatFullDate,
+    formatShortDate,
+    formatCurrency,
+    formatPeriod
+} from "../../utils/formatUtils";
 
-const Movements = ({balance, columns, rows, lastUpdate}) => {
+const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
+
     const {balanceValue, balanceCurrency} = extractBalanceValueAndCurrency(balance);
+    const [period, setPeriod] = useState(selectedPeriod);
+
+    const onChangePeriodHandler = useCallback(({ target: { value }}) => {
+        setPeriod(value);
+        onChangePeriod(value);
+    }, [setPeriod, onChangePeriod]);
 
     const renderTableHeader = () => columns.map((column, index) => (
         <th key={index} scope="col" className={`table-column-header column-${index}`}>{column}</th>
@@ -35,8 +48,15 @@ const Movements = ({balance, columns, rows, lastUpdate}) => {
                 <div className="balance-label">Saldo disponível:</div>
                 <div className="balance-value">{`${balanceValue} ${balanceCurrency}`}</div>
             </div>
-            <div className="updated">
-                {`Últ. Act.: ${formatFullDate(lastUpdate)}`}
+            <div className="periods-container">
+                <div className="periods">
+                    <select value={period} onChange={onChangePeriodHandler} className="dropdown-select">
+                        { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }
+                    </select>
+                </div>
+                <div className="updated">
+                    {`Últ. Act.: ${formatFullDate(lastUpdate)}`}
+                </div>
             </div>
             <div className="table-responsive">
                 <table className="table table-striped">
@@ -58,7 +78,9 @@ Movements.propTypes = {
     balance: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     rows: PropTypes.array.isRequired,
-    lastUpdate: PropTypes.object.isRequired
+    periods: PropTypes.array.isRequired,
+    lastUpdate: PropTypes.object.isRequired,
+    onChangePeriod: PropTypes.func.isRequired
 };
 
 export default Movements;
