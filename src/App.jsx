@@ -26,13 +26,15 @@ const App = () => {
     const [showMovements, setShowMovements] = useState(false);
     const [period, setPeriod] = useState(undefined);
 
-    const onSubmitHandler = useCallback(async () => {
+    const onSubmitHandler = useCallback(async (loginInfo) => {
         setIsLoading(true);
         setError(false);
 
-        console.log('onSubmitHandler', period);
         try {
-            const { username, password } = login;
+            const { username, password } = loginInfo;
+
+            console.log('onSubmitHandler', username, password, period);
+
             const {
                 balance = '',
                 columns = [],
@@ -53,12 +55,13 @@ const App = () => {
         } catch (error) {
             console.error('Error: ', error.message);
             setData(undefined);
+            setPeriod(undefined);
             setError(error.response.data);
         } finally {
             setIsLoading(false);
         }
 
-    }, [login, setData, setError, setIsLoading, setIsLoggedIn, period]);
+    }, [setData, setError, setIsLoading, setIsLoggedIn, period]);
 
     const onChangePeriodHandler = useCallback((value) => {
         setPeriod(value);
@@ -92,20 +95,21 @@ const App = () => {
     useEffect(() => {
         const localStorageData = localStorageService.retrieve();
         if (localStorageData) {
-            setLogin({
+            const loginInfo = {
                 ...localStorageData.login
-            });
-            onSubmitHandler();
+            };
+            setLogin(loginInfo);
+            onSubmitHandler(loginInfo);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
     //fetch movements on period change
     useEffect(() => {
-        if (period) {
-            onSubmitHandler();
+        if (period && isLoggedIn) {
+            onSubmitHandler(login);
         }
-    }, [period, onSubmitHandler]);
+    }, [isLoggedIn, login, period, onSubmitHandler]);
 
     const onLoginChangeHandler = (id, value) => {
         setLogin({
@@ -121,6 +125,7 @@ const App = () => {
         setError(undefined);
         setIsLoading(false);
         setData(undefined);
+        setPeriod(undefined);
         setShowMovements(false);
     };
 
@@ -144,7 +149,7 @@ const App = () => {
                 {showLoginForm && <Login
                     fields={login}
                     onChange={onLoginChangeHandler}
-                    onSubmit={onSubmitHandler}
+                    onSubmit={() => onSubmitHandler(login)}
                 />}
                 {error && <div className="error">
                     <span>{error}</span>
