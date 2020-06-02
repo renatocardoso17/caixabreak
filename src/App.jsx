@@ -24,20 +24,28 @@ const App = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [data, setData] = useState(undefined);
     const [showMovements, setShowMovements] = useState(false);
-
+    const [period, setPeriod] = useState(undefined);
 
     const onSubmitHandler = useCallback(async () => {
         setIsLoading(true);
         setError(false);
 
+        console.log('onSubmitHandler', period);
         try {
             const { username, password } = login;
-            const {balance = '', columns = [], rows = [], lastUpdate} = await movementsService.getData(username, password);
+            const {
+                balance = '',
+                columns = [],
+                rows = [],
+                lastUpdate,
+                periods
+            } = await movementsService.getData(username, password, period);
 
             setData({
                 balance,
                 columns,
                 rows,
+                periods,
                 lastUpdate: new Date(lastUpdate)
             });
 
@@ -50,7 +58,11 @@ const App = () => {
             setIsLoading(false);
         }
 
-    }, [login]);
+    }, [login, setData, setError, setIsLoading, setIsLoggedIn, period]);
+
+    const onChangePeriodHandler = useCallback((value) => {
+        setPeriod(value);
+    }, []);
 
     //Show Login Form
     useEffect(() => {
@@ -88,7 +100,14 @@ const App = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
 
-    const onChangeHandler = (id, value) => {
+    //fetch movements on period change
+    useEffect(() => {
+        if (period) {
+            onSubmitHandler();
+        }
+    }, [period, onSubmitHandler]);
+
+    const onLoginChangeHandler = (id, value) => {
         setLogin({
             ...login,
             [id]: value
@@ -124,7 +143,7 @@ const App = () => {
                 {isLoading && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-Loading"/>}
                 {showLoginForm && <Login
                     fields={login}
-                    onChange={onChangeHandler}
+                    onChange={onLoginChangeHandler}
                     onSubmit={onSubmitHandler}
                 />}
                 {error && <div className="error">
@@ -134,7 +153,10 @@ const App = () => {
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
+                    selectedPeriod={period}
+                    periods={data.periods}
                     lastUpdate={data.lastUpdate}
+                    onChangePeriod={onChangePeriodHandler}
                 />}
             </div>
         </div>

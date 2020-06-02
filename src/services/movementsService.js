@@ -1,18 +1,24 @@
 import axios from "axios";
 
-const requestData = async (username, password) => {
+const requestData = async (body) => {
     const {data} = await axios('/api', {
         method: 'post',
-        data: {
-            username,
-            password
-        }
+        data: body
     });
     return data;
 };
 
-const getData = (username, password) => {
-    return requestData(username, password);
+const getData = (username, password, period) => {
+    const params = {
+        username,
+        password
+    };
+
+    if (period) {
+        params.period = period;
+    }
+
+    return requestData(params);
 };
 
 export default {getData};
