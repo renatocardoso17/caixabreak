@@ -64,11 +64,19 @@ const Login = ({fields, onChange, onSubmit}) => {
     );
 };
 
+Login.defaultProps = {
+    fields: {
+        username: '',
+        password: '',
+        rememberMe: false
+    }
+};
+
 Login.propTypes = {
     fields: PropTypes.shape({
-        username: PropTypes.string.isRequired,
-        password: PropTypes.string.isRequired,
-        rememberMe: PropTypes.bool.isRequired,
+        username: PropTypes.string,
+        password: PropTypes.string,
+        rememberMe: PropTypes.bool
     }).isRequired,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired

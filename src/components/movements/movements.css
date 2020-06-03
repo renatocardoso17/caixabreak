@@ -11,15 +11,14 @@
 .periods-container {
     display: flex;
     justify-content: space-between;
-}
-
-.periods {
-
+    margin-bottom: 15px;
 }
 
 .updated {
     text-align: right;
-    padding: 0 0px 15px 10px;
+    padding-left: 10px;
+    display: flex;
+    align-items: center;
 }
 
 .table-responsive {
