@@ -133,7 +133,7 @@ const App = () => {
             <header className="app-header">
                 <img src={logo} className="app-logo" width="85" height="50" alt="logo"/>
                 {isLoggedIn && <div className="refresh-container">
-                    <div onClick={() => window.location.reload()} title="Refresh" className="app-link">
+                    <div onClick={() => onSubmitHandler(login)} title="Refresh" className="app-link">
                         <img src={refreshImg} alt="refresh" width={50} height={50}/>
                     </div>
                 </div>}
