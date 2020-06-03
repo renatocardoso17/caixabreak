@@ -3,13 +3,7 @@ import find from 'lodash/find';
 import React, {useCallback, useState} from 'react';
 import './movements.css';
 import PropTypes from "prop-types";
-import {
-    extractBalanceValueAndCurrency,
-    formatFullDate,
-    formatShortDate,
-    formatCurrency,
-    formatPeriod
-} from "../../utils/formatUtils";
+import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency} from "../../utils/formatUtils";
 
 const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
 
@@ -46,8 +40,6 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
             {renderColumnData(row)}
         </tr>
     ));
-
-
 
     return (
         <div className="movements">
@@ -93,9 +85,7 @@ Movements.propTypes = {
     balance: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     rows: PropTypes.array.isRequired,
-    periods: PropTypes.array.isRequired,
-    lastUpdate: PropTypes.object.isRequired,
-    onChangePeriod: PropTypes.func.isRequired
+    lastUpdate: PropTypes.object.isRequired
 };
 
 export default Movements;
