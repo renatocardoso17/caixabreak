@@ -1,6 +1,8 @@
 import React, {useCallback, useEffect, useState} from "react";
 
-import "bootswatch/dist/slate/bootstrap.min.css";
+import 'bootswatch/dist/slate/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 import './App.css';
 import logo from "./logo-50.png";
 import refreshImg from "./refresh.svg";
