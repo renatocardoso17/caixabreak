@@ -3,7 +3,7 @@ import find from 'lodash/find';
 import React, {useCallback, useState} from 'react';
 import './movements.css';
 import PropTypes from "prop-types";
-import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency} from "../../utils/formatUtils";
+import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency, formatPeriod} from "../../utils/formatUtils";
 
 const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
 
@@ -49,12 +49,9 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
             </div>
             <div className="periods-container">
                 <div className="periods">
-                    {/*<select value={period} onChange={onChangePeriodHandler} className="dropdown-select">*/}
-                    {/*    { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }*/}
-                    {/*</select>*/}
                     <div className="dropdown">
                         <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdown-periods" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            {periodValue}
+                            {formatPeriod(periodValue)}
                         </button>
                         <div className="dropdown-menu" aria-labelledby="dropdown-periods">
                             { periods.map(({ key, value }) => <button key={key} className="dropdown-item" type="button" onClick={() => onChangePeriodHandler(key)}>{formatPeriod(value)}</button>) }
