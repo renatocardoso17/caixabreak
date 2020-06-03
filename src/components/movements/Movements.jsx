@@ -1,18 +1,14 @@
+import get from 'lodash/get';
 import React, {useCallback, useState} from 'react';
 import './movements.css';
 import PropTypes from "prop-types";
-import {
-    extractBalanceValueAndCurrency,
-    formatFullDate,
-    formatShortDate,
-    formatCurrency,
-    formatPeriod
-} from "../../utils/formatUtils";
+import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency, formatPeriod} from "../../utils/formatUtils";
 
 const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
 
+    const defaultPeriod = selectedPeriod ? selectedPeriod : get(periods, [0, 'key']);
     const {balanceValue, balanceCurrency} = extractBalanceValueAndCurrency(balance);
-    const [period, setPeriod] = useState(selectedPeriod);
+    const [period, setPeriod] = useState(defaultPeriod);
 
     const onChangePeriodHandler = useCallback(({ target: { value }}) => {
         setPeriod(value);
@@ -49,8 +45,8 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
                 <div className="balance-value">{`${balanceValue} ${balanceCurrency}`}</div>
             </div>
             <div className="periods-container">
-                <div className="periods">
-                    <select value={period} onChange={onChangePeriodHandler} className="dropdown-select">
+                <div className="periods dropdown">
+                    <select value={period} onChange={onChangePeriodHandler} className="dropdown-select btn btn-primary btn-sm">
                         { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }
                     </select>
                 </div>
@@ -58,18 +54,20 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
                     {`Últ. Act.: ${formatFullDate(lastUpdate)}`}
                 </div>
             </div>
-            <div className="table-responsive">
-                <table className="table table-striped">
-                    <thead className="thead-dark">
-                    <tr>
-                        {renderTableHeader()}
-                    </tr>
-                    </thead>
-                    <tbody>
-                        {renderRowTable()}
-                    </tbody>
-                </table>
-            </div>
+            {
+                rows.length > 0 ? <div className="table-responsive">
+                    <table className="table table-striped">
+                        <thead className="thead-dark">
+                        <tr>
+                            {renderTableHeader()}
+                        </tr>
+                        </thead>
+                        <tbody>
+                            {renderRowTable()}
+                        </tbody>
+                    </table>
+                </div> : <div className="alert alert-primary" role="alert">Não existem movimentos</div>
+            }
         </div>
     );
 };

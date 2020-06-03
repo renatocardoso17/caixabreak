@@ -52,9 +52,9 @@
     white-space: nowrap;
 }
 
-.dropdown-select {
-    width: 100%;
-    height: auto;
+.dropdown-select, .dropdown-select:focus {
+    border: none;
+    box-shadow: none;
 }
 
 
