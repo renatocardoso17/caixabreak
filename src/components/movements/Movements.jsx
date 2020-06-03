@@ -1,3 +1,5 @@
+import get from 'lodash/get';
+import find from 'lodash/find';
 import React, {useCallback, useState} from 'react';
 import './movements.css';
 import PropTypes from "prop-types";
@@ -11,10 +13,13 @@ import {
 
 const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
 
+    const defaultPeriod = selectedPeriod ? selectedPeriod : get(periods, [0, 'key']);
     const {balanceValue, balanceCurrency} = extractBalanceValueAndCurrency(balance);
-    const [period, setPeriod] = useState(selectedPeriod);
+    const [period, setPeriod] = useState(defaultPeriod);
 
-    const onChangePeriodHandler = useCallback(({ target: { value }}) => {
+    const periodValue = get(find(periods, ['key', period]), 'value');
+
+    const onChangePeriodHandler = useCallback((value) => {
         setPeriod(value);
         onChangePeriod(value);
     }, [setPeriod, onChangePeriod]);
@@ -42,6 +47,8 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
         </tr>
     ));
 
+
+
     return (
         <div className="movements">
             <div className="balance">
@@ -50,9 +57,17 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
             </div>
             <div className="periods-container">
                 <div className="periods">
-                    <select value={period} onChange={onChangePeriodHandler} className="dropdown-select">
-                        { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }
-                    </select>
+                    {/*<select value={period} onChange={onChangePeriodHandler} className="dropdown-select">*/}
+                    {/*    { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }*/}
+                    {/*</select>*/}
+                    <div className="dropdown">
+                        <button className="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdown-periods" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            {periodValue}
+                        </button>
+                        <div className="dropdown-menu" aria-labelledby="dropdown-periods">
+                            { periods.map(({ key, value }) => <button key={key} className="dropdown-item" type="button" onClick={() => onChangePeriodHandler(key)}>{formatPeriod(value)}</button>) }
+                        </div>
+                    </div>
                 </div>
                 <div className="updated">
                     {`Últ. Act.: ${formatFullDate(lastUpdate)}`}
