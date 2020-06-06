@@ -1,10 +1,6 @@
 .form-signin {
-    width: 100%;
-    max-width: 320px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    width: 300px;
+    min-height: 300px;
 }
 
 .form-signin .form-signin-title {
@@ -37,8 +33,16 @@
     border-top-right-radius: 0;
 }
 
-.login-button {
+.form-signin .login-button {
     width: 150px;
     display: block !important;
     margin: 0 auto;
+}
+
+.form-signin .error {
+    color: red;
+    font-weight: bold;
+    padding-top: 20px;
+    font-size: 12px;
+    text-align: center;
 }

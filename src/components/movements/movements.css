@@ -1,3 +1,7 @@
+.movements {
+    align-self: flex-start;
+}
+
 .balance {
     text-align: center;
     padding: 40px 10px;
