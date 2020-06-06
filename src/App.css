@@ -1,19 +1,34 @@
+.app {
+    display: flex;
+    flex-direction: column;
+    justify-items: center;
+    height: 100vh;
+}
 .app-container {
     padding: 0 10px;
-    max-width: 500px;
-    margin: 0 auto;
+    height: 100vh;
+    display: flex;
+    justify-items: center;
+    align-items: center;
     align-self: center;
+    max-width: 500px;
+    min-width: 320px;
 }
-.app-Loading {
-    margin: 0 auto;
+.app-loading {
+    position: absolute;
+    z-index: 1;
+    width: 100px;
+    height: 100px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 .app-header {
-    align-self: flex-start;
-    background-color: #202226;
     display: flex;
-    width: 100%;
     justify-content: space-between;
     align-items: center;
+    background-color: #202226;
+    width: 100%;
     color: white;
     padding: 10px;
     -webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,0.75);
@@ -35,10 +50,3 @@
     text-align: right;
 }
 
-.error {
-    color: red;
-    font-weight: bold;
-    padding: 20px;
-    font-size: 12px;
-    text-align: center;
-}

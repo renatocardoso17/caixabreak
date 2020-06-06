@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 
 import './Login.css';
 
-const Login = ({fields, onChange, onSubmit}) => {
+const Login = ({fields, onChange, onSubmit, error}) => {
     const {username, password, rememberMe} = fields;
 
     const onChangeHandler = useCallback(event => {
@@ -60,6 +60,9 @@ const Login = ({fields, onChange, onSubmit}) => {
             </div>
 
             <button className="btn btn-lg btn-primary login-button" onClick={onSubmitHandler}>Autenticar</button>
+            {error && <div className="error">
+                <span>{error}  asdoiasdjdasijjsad dasjasoidjpoadjs adsopsaipjdaspj adspojasdihsad</span>
+            </div>}
         </div>
     );
 };
@@ -69,7 +72,8 @@ Login.defaultProps = {
         username: '',
         password: '',
         rememberMe: false
-    }
+    },
+    error: undefined
 };
 
 Login.propTypes = {
@@ -78,6 +82,7 @@ Login.propTypes = {
         password: PropTypes.string,
         rememberMe: PropTypes.bool
     }).isRequired,
+    error: PropTypes.string,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
 };

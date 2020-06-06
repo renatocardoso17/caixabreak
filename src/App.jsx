@@ -18,6 +18,7 @@ const App = () => {
         password: '',
         rememberMe: false
     };
+    const [isAppReady, setAppReady] = useState(false);
     const [login, setLogin] = useState(loginDefaults);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [showLoginForm, setShowLoginForm] = useState(false);
@@ -57,6 +58,7 @@ const App = () => {
             setPeriod(undefined);
             setError(error.response.data);
         } finally {
+            setAppReady(true);
             setIsLoading(false);
         }
 
@@ -97,8 +99,11 @@ const App = () => {
             const loginInfo = {
                 ...localStorageData.login
             };
+
             setLogin(loginInfo);
             onSubmitHandler(loginInfo);
+        } else {
+            setAppReady(true);
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     },[]);
@@ -132,28 +137,26 @@ const App = () => {
         <div className="app">
             <header className="app-header">
                 <img src={logo} className="app-logo" width="85" height="50" alt="logo"/>
-                {isLoggedIn && <div className="refresh-container">
+                {isAppReady && isLoggedIn && <div className="refresh-container">
                     <div onClick={() => onSubmitHandler(login)} title="Refresh" className="app-link">
                         <img src={refreshImg} alt="refresh" width={50} height={50}/>
                     </div>
                 </div>}
-                {isLoggedIn && <div className="logout-container">
+                {isAppReady && isLoggedIn && <div className="logout-container">
                     <div onClick={logoutHandler} title="Sair" className="app-link">
                         <img src={logoutImg} alt="logout" width={40} height={40}/>
                     </div>
                 </div>}
             </header>
             <div className="app-container">
-                {isLoading && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-Loading"/>}
-                {showLoginForm && <Login
+                {(isLoading || !isAppReady) && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-loading"/>}
+                {isAppReady && showLoginForm && <Login
                     fields={login}
                     onChange={onLoginChangeHandler}
                     onSubmit={() => onSubmitHandler(login)}
+                    error={error}
                 />}
-                {error && <div className="error">
-                    <span>{error}</span>
-                </div>}
-                {showMovements && <Movements
+                {isAppReady && showMovements && <Movements
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
