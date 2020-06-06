@@ -4,7 +4,7 @@ import './movements.css';
 import PropTypes from "prop-types";
 import {extractBalanceValueAndCurrency, formatFullDate, formatShortDate, formatCurrency, formatPeriod} from "../../utils/formatUtils";
 
-const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod}) => {
+const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod, onChangePeriod, isOnline}) => {
 
     const defaultPeriod = selectedPeriod ? selectedPeriod : get(periods, [0, 'key']);
     const {balanceValue, balanceCurrency} = extractBalanceValueAndCurrency(balance);
@@ -46,7 +46,7 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
             </div>
             <div className="periods-container">
                 <div className="periods dropdown">
-                    <select value={period} onChange={onChangePeriodHandler} className="dropdown-select btn btn-primary btn-sm">
+                    <select value={period} disabled={!isOnline} onChange={onChangePeriodHandler} className="dropdown-select btn btn-primary btn-sm">
                         { periods.map(({ key, value }) => <option key={key} value={key} className="dropdown-option">{formatPeriod(value)}</option>) }
                     </select>
                 </div>
@@ -73,6 +73,7 @@ const Movements = ({balance, columns, rows, lastUpdate, periods, selectedPeriod,
 };
 
 Movements.propTypes = {
+    isOnline: PropTypes.bool.isRequired,
     balance: PropTypes.string.isRequired,
     columns: PropTypes.array.isRequired,
     rows: PropTypes.array.isRequired,

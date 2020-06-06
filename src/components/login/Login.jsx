@@ -61,7 +61,7 @@ const Login = ({fields, onChange, onSubmit, error}) => {
 
             <button className="btn btn-lg btn-primary login-button" onClick={onSubmitHandler}>Autenticar</button>
             {error && <div className="error">
-                <span>{error}  asdoiasdjdasijjsad dasjasoidjpoadjs adsopsaipjdaspj adspojasdihsad</span>
+                <span>{error}</span>
             </div>}
         </div>
     );
@@ -82,7 +82,7 @@ Login.propTypes = {
         password: PropTypes.string,
         rememberMe: PropTypes.bool
     }).isRequired,
-    error: PropTypes.string,
+    error: PropTypes.any,
     onChange: PropTypes.func.isRequired,
     onSubmit: PropTypes.func.isRequired
 };
