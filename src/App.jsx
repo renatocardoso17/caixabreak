@@ -168,6 +168,7 @@ const App = () => {
                     </div>
                 </div>}
             </header>
+            {!isOnline && <div className="app-offline">Offline</div>}
             <div className="app-container">
                 {(isLoading || !isAppReady) && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-loading"/>}
                 {isAppReady && showLoginForm && <Login
