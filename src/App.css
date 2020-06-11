@@ -50,3 +50,6 @@
     text-align: right;
 }
 
+.app-offline {
+    background-color: red;
+}
