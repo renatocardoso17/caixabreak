@@ -1,4 +1,4 @@
-##Welcome to CaixaBreak project
+## Welcome to CaixaBreak project
 
 This project was developed by a small team in their spare times in order to bring to life
 an app capable of providing easy access to our caixa break card account.
