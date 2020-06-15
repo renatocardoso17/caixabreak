@@ -1,3 +1,5 @@
+import get from 'lodash/get';
+import isEmpty from 'lodash/isEmpty';
 import React, {useCallback, useEffect, useState} from "react";
 
 import 'bootswatch/dist/slate/bootstrap.min.css';
@@ -11,6 +13,7 @@ import Login from "./components/login/Login";
 import Movements from "./components/movements/Movements";
 import localStorageService from "./services/localStorageService";
 import movementsService from "./services/movementsService";
+import useOnlineStatus from './hooks/useOnlineStatus';
 
 const App = () => {
     const loginDefaults = {
@@ -27,14 +30,31 @@ const App = () => {
     const [data, setData] = useState(undefined);
     const [showMovements, setShowMovements] = useState(false);
     const [period, setPeriod] = useState(undefined);
+    const isOnline = useOnlineStatus();
 
     const onSubmitHandler = useCallback(async (loginInfo) => {
         setIsLoading(true);
         setError(false);
 
-        try {
-            const { username, password } = loginInfo;
+        const {
+            username = loginDefaults.username,
+            password = loginDefaults.password,
+            rememberMe = loginDefaults.rememberMe
+        } = loginInfo;
 
+        if (!isOnline && rememberMe && !isEmpty(username) && !isEmpty(username)) {
+            const localStorageData = localStorageService.retrieve();
+            if (localStorageData) {
+                setData(get(localStorageData, 'data'));
+                setPeriod(get(localStorageData, 'period'));
+            }
+            setIsLoggedIn(true);
+            setAppReady(true);
+            setIsLoading(false);
+            return;
+        }
+
+        try {
             const {
                 balance = '',
                 columns = [],
@@ -43,15 +63,26 @@ const App = () => {
                 periods
             } = await movementsService.getData(username, password, period);
 
-            setData({
+            const dataInfo = {
                 balance,
                 columns,
                 rows,
+                period,
                 periods,
                 lastUpdate: new Date(lastUpdate)
+            };
+
+            setData(dataInfo);
+            setIsLoggedIn(true);
+
+            localStorageService.save({
+                login: loginInfo,
+                data: {
+                    ...dataInfo,
+                    period
+                }
             });
 
-            setIsLoggedIn(true);
         } catch (error) {
             console.error('Error: ', error.message);
             setData(undefined);
@@ -62,11 +93,11 @@ const App = () => {
             setIsLoading(false);
         }
 
-    }, [setData, setError, setIsLoading, setIsLoggedIn, period]);
+    }, [setData, setError, setIsLoading, setIsLoggedIn, period, isOnline, loginDefaults]);
 
     const onChangePeriodHandler = useCallback((value) => {
         setPeriod(value);
-    }, []);
+    }, [setPeriod]);
 
     //Show Login Form
     useEffect(() => {
@@ -79,18 +110,6 @@ const App = () => {
         const show = !isLoading && isLoggedIn && data;
         setShowMovements(show);
     }, [isLoggedIn, isLoading, data, setShowMovements]);
-
-
-    //Save credentials on Login
-    useEffect(() => {
-        if(isLoggedIn && login.rememberMe && data) {
-            localStorageService.save({
-                login,
-                lastUpdate: data.lastUpdate,
-                data,
-            })
-        }
-    },[isLoggedIn, login, data]);
 
     //Read credentials from local storage
     useEffect(() => {
@@ -113,7 +132,8 @@ const App = () => {
         if (period && isLoggedIn) {
             onSubmitHandler(login);
         }
-    }, [isLoggedIn, login, period, onSubmitHandler]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isLoggedIn, period, login]);
 
     const onLoginChangeHandler = (id, value) => {
         setLogin({
@@ -148,6 +168,7 @@ const App = () => {
                     </div>
                 </div>}
             </header>
+            {!isOnline && <div className="app-offline">Offline</div>}
             <div className="app-container">
                 {(isLoading || !isAppReady) && <ReactLoading type="bars" color="#aaa" height={100} width={100} className="app-loading"/>}
                 {isAppReady && showLoginForm && <Login
@@ -157,6 +178,7 @@ const App = () => {
                     error={error}
                 />}
                 {isAppReady && showMovements && <Movements
+                    isOnline={isOnline}
                     balance={data.balance}
                     columns={data.columns}
                     rows={data.rows}
