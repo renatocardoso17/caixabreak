@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+WIREMOCKPORT=8080
 
 printf "Shutting down previous Wiremock...\n"
 sh ./tools/wiremock/scripts/wiremock-stop.sh
@@ -13,6 +14,5 @@ function finish {
 
 trap finish EXIT
 
-WIREMOCKPORT=8080
 printf "Starting Wiremock on port ${WIREMOCKPORT}...\n"
 java -jar ./tools/wiremock/bin/wiremock-standalone-2.21.0.jar --port=${WIREMOCKPORT} --root-dir=./tools/wiremock/mocks --no-request-journal=true

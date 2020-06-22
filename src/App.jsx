@@ -46,7 +46,7 @@ const App = () => {
             const localStorageData = localStorageService.retrieve();
             if (localStorageData) {
                 setData(get(localStorageData, 'data'));
-                setPeriod(get(localStorageData, 'period'));
+                setPeriod(get(localStorageData, 'data.period'));
             }
             setIsLoggedIn(true);
             setAppReady(true);
