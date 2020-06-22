@@ -7,7 +7,10 @@ Don't worry, we don't save any sensitive data (such as your login credentials)
 and the app is fully encrypted with ssl encryption. Take a look at the code ;)
 
 If you want to be part of our team of awesome developers, please drop an
-email to [caixabreak@renatocardoso.dev](mailto:caixabreak@renatocardoso.dev). You are more than welcome :) 
+email to [caixabreak@renatocardoso.dev](mailto:caixabreak@renatocardoso.dev). You are more than welcome :)
+Otherwise you can simply contribute with bug fixes or new ideas by creating pull requests.
+
+The webiste is already live at [caixabreak.web.app](https://caixabreak.web.app/)!
 
 ## Available Scripts
 
@@ -50,6 +53,12 @@ An alternative to the above configuration, is to use wire mock and setup mock da
 from our backend service by running the following command:
 
 `npm run mock`
+
+## Contributors
+
+* [@renatocardoso17](https://github.com/renatocardoso17)
+* [@linopereira](https://github.com/linopereira)
+* [@aemendes](https://github.com/aemendes)
 
 ## License
 Caixa Break is Open Source software released under the [Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
