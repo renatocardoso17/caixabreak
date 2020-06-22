@@ -50,3 +50,7 @@ An alternative to the above configuration, is to use wire mock and setup mock da
 from our backend service by running the following command:
 
 `npm run mock`
+
+## License
+CaixaBreak is Open Source software released under the
+[Apache 2.0 license](https://www.apache.org/licenses/LICENSE-2.0.html).
