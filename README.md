@@ -7,7 +7,7 @@ Don't worry, we don't save any sensitive data (like your login credentials)
 and the app is fully encrypted using ssl encryption.
 
 If you want to be part of our team of awesome developers, please drop an
-email to [caixa-break@renatocardoso.dev](mailto:caixa-break@renatocardoso.dev). You are more than welcome :) 
+email to [caixabreak@renatocardoso.dev](mailto:caixabreak@renatocardoso.dev). You are more than welcome :) 
 
 ## Available Scripts
 
