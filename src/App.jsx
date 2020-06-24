@@ -42,7 +42,7 @@ const App = () => {
             rememberMe = loginDefaults.rememberMe
         } = loginInfo;
 
-        if (!isOnline && rememberMe && !isEmpty(username) && !isEmpty(username)) {
+        if (!isOnline && rememberMe && !isEmpty(username) && !isEmpty(password)) {
             const localStorageData = localStorageService.retrieve();
             if (localStorageData) {
                 setData(get(localStorageData, 'data'));
