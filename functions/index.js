@@ -8,6 +8,18 @@ const cheerio = require('cheerio');
 // https://firebase.google.com/docs/functions/write-firebase-functions
 
 exports.api = functions.https.onRequest(async (request, response) => {
+    const allowedCrossOrigins = ['http://localhost:5000'];
+    if(allowedCrossOrigins.indexOf(request.headers.origin) > -1){
+        response.set('Access-Control-Allow-Origin', request.headers.origin);
+    }
+    if (request.method === 'OPTIONS') {
+        // Send response to OPTIONS requests
+        response.set('Access-Control-Allow-Methods', 'POST');
+        response.set('Access-Control-Allow-Headers', 'Content-Type');
+        response.set('Access-Control-Max-Age', '3600');
+        response.status(204).send('');
+        return;
+    }
     const username = request.body.username || process.env.USERNAME;
     const password = request.body.password || process.env.PASSWORD;
     const period = request.body.period || 'UNBLD';
