@@ -36,7 +36,7 @@ Deploys only the website part of the project (firebase hosting deploy only).
 
 Deploys only backend part of the website (firebase functions deploy only).
 
-### `npm run deploy all`
+### `npm run deploy-all`
 
 Deploys the full stack to firebase.
 
