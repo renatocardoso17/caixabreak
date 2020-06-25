@@ -3,8 +3,8 @@
 This project was developed by a small team of ninja developers in their spare times in order to bring to life
 an app capable of providing easy access to our caixa break card account.
 
-Don't worry, we don't save any sensitive data (such as your login credentials)
-and the app is fully encrypted with ssl encryption. Take a look at the code ;)
+Don't worry, we don't save any sensitive data (such as your login credentials).
+Take a look at the code if you want to ;)
 
 If you want to be part of our team of awesome developers, please drop an
 email to [caixabreak@renatocardoso.dev](mailto:caixabreak@renatocardoso.dev). You are more than welcome :)
