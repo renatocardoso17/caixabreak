@@ -15,7 +15,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "cheerio": "^1.0.0-rc.3",
-    "firebase-admin": "^8.12.1",
+    "firebase-admin": "^11.4.1",
     "firebase-functions": "^3.7.0",
     "set-cookie-parser": "^2.4.6",
     "when": "^3.7.8"
